@@ -66,6 +66,24 @@ type VaultTypeAdmin struct {
 	PublicKey string `json:"publicKey"`
 }
 
+// FolderPathEntry is a breadcrumb segment returned by GetFolder.
+type FolderPathEntry struct {
+	VaultID  string `json:"vaultId"`
+	Name     string `json:"name"`
+	FolderID string `json:"folderId,omitempty"`
+}
+
+// Folder represents a directory inside a vault.
+type Folder struct {
+	ID             string            `json:"id,omitempty"`
+	Name           string            `json:"name,omitempty"`
+	VaultID        string            `json:"vaultId,omitempty"`
+	ParentFolderID string            `json:"parentFolderId,omitempty"`
+	Color          int               `json:"color,omitempty"`
+	Permissions    []string          `json:"permissions,omitempty"`
+	Path           []FolderPathEntry `json:"path,omitempty"`
+}
+
 // InboxItem represents a password shared via the inbox mechanism.
 type InboxItem struct {
 	ID                string       `json:"id,omitempty"`
