@@ -74,6 +74,29 @@ func (c *Client) GetVault(ctx context.Context, id string) (*Vault, error) {
 	return &vault, nil
 }
 
+// GetVaults returns all vaults accessible to the current user.
+func (c *Client) GetVaults(ctx context.Context) ([]Vault, error) {
+	var resp struct {
+		Items []Vault `json:"items"`
+	}
+	if err := c.call(ctx, "GET", "/api/v1/vaults", nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp.Items, nil
+}
+
+// UpdateVault renames the vault identified by id. Renaming does not affect the
+// vault master key, so no re-encryption is needed even when client-side
+// encryption is active.
+func (c *Client) UpdateVault(ctx context.Context, id, name string) error {
+	return c.call(ctx, "POST", "/api/v1/vaults/"+id, map[string]interface{}{"name": name}, nil)
+}
+
+// DeleteVault permanently deletes the vault identified by id.
+func (c *Client) DeleteVault(ctx context.Context, id string) error {
+	return c.call(ctx, "DELETE", "/api/v1/vaults/"+id, nil, nil)
+}
+
 // getVaultPassword RSA-decrypts the vault's masterKeyEncrypted field using the
 // user's private key. Returns an empty string when encryption is inactive.
 func (c *Client) getVaultPassword(vault *Vault) (string, error) {
